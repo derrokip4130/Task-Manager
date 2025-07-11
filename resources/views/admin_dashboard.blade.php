@@ -22,6 +22,10 @@
   <div class="dashboard-header text-center">
     <h2>Admin Dashboard</h2>
     <p>Welcome, Administrator</p>
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button class="btn btn-danger">Logout</button>
+    </form>
   </div>
 
   <div class="container mt-4">
@@ -32,33 +36,42 @@
         <div class="card">
           <div class="card-header bg-primary text-white">User Management</div>
           <div class="card-body">
-            <form id="userForm">
-              <div class="mb-2">
-                <input type="text" class="form-control" placeholder="Full Name" required>
-              </div>
-              <div class="mb-2">
-                <input type="email" class="form-control" placeholder="Email Address" required>
-              </div>
-              <div class="mb-2">
-                <select class="form-select">
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-success">Add User</button>
+            <form id="userForm" method="POST" action="{{ route('admin.users.store') }}">
+                @csrf
+                <div class="mb-2">
+                    <input type="text" class="form-control" name="name" placeholder="Full Name" required>
+                </div>
+                <div class="mb-2">
+                    <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+                </div>
+                <button type="submit" class="btn btn-success">Add User</button>
             </form>
             <hr>
-            <h6>Existing Users</h6>
-            <ul class="list-group">
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                John Doe (User)
-                <div>
-                  <button class="btn btn-sm btn-warning">Edit</button>
-                  <button class="btn btn-sm btn-danger">Delete</button>
-                </div>
-              </li>
-              <!-- More users here -->
-            </ul>
+            @if(session('success'))
+        <div class="alert alert-success mt-2">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        <h6>Existing Users</h6>
+        <ul class="list-group">
+        @foreach ($users as $user)
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ $user->name }} ({{ ucfirst($user->role) }})
+            <div>
+                {{-- Optional Edit Button --}}
+                {{-- <button class="btn btn-sm btn-warning">Edit</button> --}}
+
+                {{-- Delete Form --}}
+                <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" style="display: inline-block;">
+                @csrf
+                @method('DELETE')
+                <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </div>
+            </li>
+        @endforeach
+        </ul>
           </div>
         </div>
       </div>
