@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Task;
+use App\Mail\UserCreatedMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
@@ -30,17 +33,18 @@ class AdminUserController extends Controller
             'email' => 'required|email|unique:users',
         ]);
 
-        $password = 'NewPassword123';
+        $tempPassword = Str::random(10);
 
-        $user = \App\Models\User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'role' => 'user',
-            'password' => \Hash::make($password),
+            'password' => \Hash::make($tempPassword),
         ]);
 
-        // You can email them their password here if needed
-        return redirect()->back()->with('success', 'User created.');
+        Mail::to($user->email)->send(new UserCreatedMail($user, $tempPassword));
+
+        return redirect()->back()->with('success', 'User created and email sent.');
     }
 
     public function destroy($id)
