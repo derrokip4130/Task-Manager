@@ -10,9 +10,9 @@
 
     <p><strong>Temporary Password:</strong> {{ $tempPassword }}</p>
 
-    <p>Please log in using your email and this temporary password, then change your password here:</p>
+    <p>Please log in using your email and this password:</p>
 
-    <a href="{{ url('/change-password') }}">Change Password</a>
+    <a href="{{ url('/login') }}">Log in</a>
 
     <p>Thanks,<br>The Admin Team</p>
 </body>

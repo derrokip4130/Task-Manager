@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Task;
 use App\Models\User;
-
+use App\Mail\TaskAssignedMail;
 
 class TaskController extends Controller
 {
@@ -26,6 +26,8 @@ class TaskController extends Controller
             'deadline' => $request->deadline,
             'status' => 'Pending', // default
         ]);
+
+        Mail::to($task->user->email)->send(new TaskAssignedMail($task));
 
         return redirect()->back()->with('success', 'Task assigned successfully!');
     }

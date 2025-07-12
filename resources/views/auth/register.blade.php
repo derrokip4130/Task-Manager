@@ -38,11 +38,6 @@
                 <input type="password" class="form-control" name="password" required>
               </div>
               <div class="mb-3">
-                <label for="role" class="form-label">Role</label>
-                <select name="role" class="form-select">
-                  <option value="user" selected>User</option>
-                  <option value="admin">Admin</option>
-                </select>
                 </div>
                 <button type="submit" class="btn btn-success w-100">Register</button>
                 @if($errors->any())
