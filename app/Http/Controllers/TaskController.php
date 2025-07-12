@@ -49,6 +49,10 @@ class TaskController extends Controller
         $task->status = $request->status;
         $task->save();
 
-        return redirect()->back()->with('success', 'Task status updated successfully.');
+        return redirect()->back()->with([
+            'success' => 'Task status updated successfully!',
+            'updated_task_id' => $request->task_id
+        ]);
+
     }
 }
