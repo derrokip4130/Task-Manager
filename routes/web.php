@@ -4,14 +4,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserDashboardController;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/user_dashboard', function () {
-    return view('user_dashboard');
-});
+Route::get('/user_dashboard', [UserDashboardController::class, 'dashboard'])->middleware('auth');
 
 Route::get('/admin_dashboard', function () {
     return view('admin_dashboard');
@@ -24,6 +23,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::post('tasks/', [TaskController::class, 'store'])->name('tasks.store');
+Route::post('/update-task-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);

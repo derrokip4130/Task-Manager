@@ -49,25 +49,38 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Example task row -->
-                <tr>
-                  <td>Fix frontend bug</td>
-                  <td>Resolve issue in task view layout</td>
-                  <td>2025-07-15</td>
-                  <td><span class="badge bg-warning text-dark">Pending</span></td>
-                  <td>
-                    <form method="POST" action="/update-task-status">
-                      <input type="hidden" name="task_id" value="123">
-                      <select name="status" class="form-select form-select-sm status-select">
-                        <option value="Pending" selected>Pending</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                      </select>
-                      <button type="submit" class="btn btn-sm btn-success mt-1">Update</button>
-                    </form>
-                  </td>
-                </tr>
-                <!-- More tasks dynamically loaded -->
+                @foreach ($tasks as $task)
+                  @php
+                      $isOverdue = \Carbon\Carbon::parse($task->deadline)->isPast() && $task->status !== 'Completed';
+                  @endphp
+                  <tr class="{{ $isOverdue ? 'table-danger' : '' }}">
+                    <td>{{ $task->title }}</td>
+                    <td>{{ $task->description }}</td>
+                    <td title="{{ $isOverdue ? 'Past Deadline' : '' }}">
+                      {{ $task->deadline }}
+                    </td>
+                    <td>
+                      <span class="badge 
+                        @if($task->status === 'Pending') bg-warning text-dark
+                        @elseif($task->status === 'In Progress') bg-info text-dark
+                        @else bg-success @endif">
+                        {{ $task->status }}
+                      </span>
+                    </td>
+                    <td>
+                      <form method="POST" action="{{ route('tasks.updateStatus') }}">
+                        @csrf
+                        <input type="hidden" name="task_id" value="{{ $task->id }}">
+                        <select name="status" class="form-select form-select-sm">
+                          <option value="Pending" {{ $task->status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                          <option value="In Progress" {{ $task->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                          <option value="Completed" {{ $task->status == 'Completed' ? 'selected' : '' }}>Completed</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success mt-1">Update</button>
+                      </form>
+                    </td>
+                  </tr>
+                @endforeach
               </tbody>
             </table>
             <p class="text-muted">Tasks are sorted by deadline. Make sure to update your progress regularly.</p>
