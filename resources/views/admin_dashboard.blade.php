@@ -81,29 +81,32 @@
         <div class="card">
           <div class="card-header bg-success text-white">Assign Task</div>
           <div class="card-body">
-            <form id="taskForm">
+            <form id="taskForm" method="POST" action="{{ route('tasks.store') }}">
+              @csrf
+
               <div class="mb-2">
-                <input type="text" class="form-control" placeholder="Task Title" required>
+                <input type="text" name="title" class="form-control" placeholder="Task Title" required>
               </div>
               <div class="mb-2">
-                <textarea class="form-control" placeholder="Task Description" rows="2" required></textarea>
+                <textarea name="description" class="form-control" placeholder="Task Description" rows="2" required></textarea>
               </div>
               <div class="mb-2">
-                <select class="form-select">
+                <select name="user_id" class="form-select" required>
                   <option selected disabled>Select User</option>
-                  <option value="1">John Doe</option>
-                  <!-- Dynamically populate -->
+                  @foreach ($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                  @endforeach
                 </select>
               </div>
               <div class="mb-2">
-                <input type="date" class="form-control" required>
+                <input type="date" name="deadline" class="form-control" required>
               </div>
+
               <button type="submit" class="btn btn-primary">Assign Task</button>
             </form>
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- Task Summary Section -->
@@ -123,17 +126,21 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Fix Login Bug</td>
-                  <td>John Doe</td>
-                  <td>2025-07-15</td>
-                  <td><span class="badge bg-warning text-dark">Pending</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-warning">Edit</button>
-                    <button class="btn btn-sm btn-danger">Delete</button>
-                  </td>
-                </tr>
-                <!-- More tasks -->
+                @foreach ($tasks as $task)
+                  <tr>
+                    <td>{{ $task->title }}</td>
+                    <td>{{ $task->user->name }}</td>
+                    <td>{{ $task->deadline }}</td>
+                    <td>
+                      <span class="badge bg-{{ $task->status === 'Pending' ? 'warning text-dark' : ($task->status === 'In Progress' ? 'info text-dark' : 'success') }}">
+                        {{ $task->status }}
+                      </span>
+                    </td>
+                    <td>
+                      <!-- Edit/Delete buttons (optional) -->
+                    </td>
+                  </tr>
+                @endforeach
               </tbody>
             </table>
           </div>

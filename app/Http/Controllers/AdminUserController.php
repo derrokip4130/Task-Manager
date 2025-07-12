@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Task;
 
 class AdminUserController extends Controller
 {
@@ -12,8 +14,9 @@ class AdminUserController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
-        $users = \App\Models\User::all();
-        return view('admin_dashboard', compact('users'));
+        $users = User::all();
+        $tasks = Task::with('user')->get();
+        return view('admin_dashboard', compact('users', 'tasks'));
     }
 
     public function store(Request $request)
