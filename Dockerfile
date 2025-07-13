@@ -3,7 +3,15 @@ FROM php:8.2-apache
 
 # ✅ 2. Install dependencies
 RUN apt-get update && apt-get install -y \
-  postgresql-client
+    git \
+    zip unzip \
+    libonig-dev \
+    libzip-dev \
+    curl \
+    libpng-dev \
+    libpq-dev \
+    postgresql-client \
+    && docker-php-ext-install pdo_pgsql zip mbstring exif pcntl bcmath gd
 
 # ✅ 3. Enable Apache rewrite
 RUN a2enmod rewrite

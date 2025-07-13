@@ -1,18 +1,18 @@
-#!/bin/bash
+#!/bin/sh
 
-echo "Waiting for PostgreSQL via Laravel..."
+echo "Waiting for the database to be ready..."
 
-until php artisan migrate:status > /dev/null 2>&1; do
-  echo "Database is not ready yet..."
-  sleep 3
+# wait until PostgreSQL is ready (optional)
+until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USERNAME"; do
+  echo "Database not ready yet..."
+  sleep 2
 done
 
-echo "Database is up. Running Laravel setup..."
-
+# run Laravel setup commands
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 php artisan migrate --force
 
-# Start Apache
+# start apache
 apache2-foreground
