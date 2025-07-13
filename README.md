@@ -50,6 +50,7 @@ _Add 2–4 screenshots:_
     composer install
 
 2. **Update database and mail credentials in .env file:**
+    ```bash
     DB_CONNECTION=pgsql
     DB_HOST=127.0.0.1
     DB_PORT=5432
@@ -67,8 +68,10 @@ _Add 2–4 screenshots:_
     MAIL_FROM_NAME="${APP_NAME}"
 
 3. **Run Migrations**
+    ```bash
     php artisan migrate --seed
 
 4. **Start server**
+    ```bash
     php artisan serve
 
