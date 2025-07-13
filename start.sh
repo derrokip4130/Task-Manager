@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# Ensure permissions
-chown -R www-data:www-data storage bootstrap/cache
+echo "Waiting for the database to be ready..."
 
-# Wait for PostgreSQL to be ready
-until /usr/bin/pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USERNAME"; do
-  echo "Waiting for PostgreSQL at $DB_HOST:$DB_PORT..."
+# Try connecting via Laravel's migration status
+until php artisan migrate:status > /dev/null 2>&1; do
+  echo "Database not ready yet..."
   sleep 2
 done
 
-# Laravel setup
+echo "Database is ready!"
+
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
