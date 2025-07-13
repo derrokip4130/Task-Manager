@@ -29,7 +29,7 @@ class TaskAssignedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Task Assigned Mail',
+            subject: 'Task Assigned',
         );
     }
 
@@ -39,7 +39,7 @@ class TaskAssignedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'task_assigned',
+            view: 'emails.task_assigned',
         );
     }
 
@@ -52,8 +52,5 @@ class TaskAssignedMail extends Mailable
     {
         return [];
     }
-    public function build()
-    {
-        return $this->subject('New Task Assigned to You')->view('emails.task_assigned');
-    }
+
 }

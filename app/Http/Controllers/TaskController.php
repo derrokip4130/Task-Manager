@@ -29,7 +29,7 @@ class TaskController extends Controller
 
         Mail::to($task->user->email)->send(new TaskAssignedMail($task));
 
-        return redirect()->back()->with('success', 'Task assigned successfully!');
+        return redirect()->back()->with('task_success', 'Task assigned successfully!');
     }
 
     public function updateStatus(Request $request)

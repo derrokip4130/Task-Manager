@@ -9,19 +9,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserCreatedMail extends Mailable
+class UserUpdatedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $tempPassword;
+    public $name;
+    public $email;
+
     /**
      * Create a new message instance.
      */
-    public function __construct($user, $tempPassword)
+    public function __construct($name, $email)
     {
-        $this->user = $user;
-        $this->tempPassword = $tempPassword;
+        $this->name = $name;
+        $this->email = $email;
     }
 
     /**
@@ -30,7 +31,7 @@ class UserCreatedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'User Created',
+            subject: 'User Updated',
         );
     }
 
@@ -40,7 +41,7 @@ class UserCreatedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.user_created',
+            view: 'emails.user_updated',
         );
     }
 

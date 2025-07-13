@@ -6,11 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Task;
 use App\Mail\UserCreatedMail;
+use App\Mail\UserUpdatedMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
+    public function index()
+    {
+        if (auth()->user()->role !== 'admin') abort(403);
+        $users = User::where('role', 'user')->get();
+        return view('users', compact('users'));
+    }
+
     public function dashboard()
     {
         if (auth()->user()->role !== 'admin') {
@@ -44,7 +52,7 @@ class AdminUserController extends Controller
 
         Mail::to($user->email)->send(new UserCreatedMail($user, $tempPassword));
 
-        return redirect()->back()->with('success', 'User created and email sent.');
+        return redirect()->back()->with('user_success', 'User created and email sent.');
     }
 
     public function destroy($id)
@@ -53,8 +61,29 @@ class AdminUserController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
-        \App\Models\User::findOrFail($id)->delete();
+        User::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'User deleted.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        $request->validate([
+            'name'  => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $id,
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        Mail::to($user->email)->send(new UserUpdatedMail($user->name, $user->email));
+
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
 
 }

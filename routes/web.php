@@ -7,7 +7,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserDashboardController;
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('home');
 });
 
 Route::get('/user_dashboard', [UserDashboardController::class, 'dashboard'])->middleware('auth');
@@ -19,7 +19,9 @@ Route::get('/admin_dashboard', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin_dashboard', [AdminUserController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
     Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
 });
 
 Route::post('tasks/', [TaskController::class, 'store'])->name('tasks.store');
