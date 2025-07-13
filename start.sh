@@ -1,14 +1,13 @@
 #!/bin/bash
 
-echo "Waiting for the database to be ready..."
+echo "Waiting for PostgreSQL via Laravel..."
 
-# Try connecting via Laravel's migration status
 until php artisan migrate:status > /dev/null 2>&1; do
-  echo "Database not ready yet..."
-  sleep 2
+  echo "Database is not ready yet..."
+  sleep 3
 done
 
-echo "Database is ready!"
+echo "Database is up. Running Laravel setup..."
 
 php artisan config:cache
 php artisan route:cache

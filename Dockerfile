@@ -3,8 +3,7 @@ FROM php:8.2-apache
 
 # ✅ 2. Install dependencies
 RUN apt-get update && apt-get install -y \
-    git zip unzip libonig-dev libzip-dev curl libpng-dev libpq-dev \
-    && docker-php-ext-install pdo_pgsql zip mbstring exif pcntl bcmath gd
+  postgresql-client
 
 # ✅ 3. Enable Apache rewrite
 RUN a2enmod rewrite
@@ -31,8 +30,4 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 # ✅ 10. Copy and enable start script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
-
-RUN which pg_isready || echo "pg_isready NOT FOUND"
-
-# ✅ 11. Use start.sh as container entrypoint
 CMD ["/start.sh"]
