@@ -32,5 +32,7 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
+RUN which pg_isready || echo "pg_isready NOT FOUND"
+
 # ✅ 11. Use start.sh as container entrypoint
 CMD ["/start.sh"]

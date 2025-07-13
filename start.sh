@@ -3,10 +3,10 @@
 # Ensure permissions
 chown -R www-data:www-data storage bootstrap/cache
 
-# Wait for DB to be ready (optional but helpful)
-echo "Waiting for database..."
-until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USERNAME; do
-  sleep 1
+# Wait for PostgreSQL to be ready
+until /usr/bin/pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USERNAME"; do
+  echo "Waiting for PostgreSQL at $DB_HOST:$DB_PORT..."
+  sleep 2
 done
 
 # Laravel setup
